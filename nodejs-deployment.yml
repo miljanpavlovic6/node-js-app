@@ -1,0 +1,45 @@
+
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: "k8s-node"
+  namespace: "nodejs-app"
+  labels:
+    app: "k8s-node"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "k8s-node"
+  template:
+    metadata:
+      labels:
+        app: "k8s-node"
+    spec:
+      containers:
+        - name: "k8s-hello-node"
+          image: "byjg/k8s-hello-node"
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+
+---
+apiVersion: "v1"
+kind: "Service"
+metadata:
+  name: "k8s-node-service"
+  namespace: "nodejs-app"
+  labels:
+    app: "k8s-node"
+spec:
+  ports:
+    - protocol: "TCP"
+      port: 80
+      targetPort: 3000
+  selector:
+    app: "k8s-node"
+  type: "LoadBalancer"
